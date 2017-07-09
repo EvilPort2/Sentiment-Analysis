@@ -1,8 +1,8 @@
-# Sensitivity-Analysis
-Sensitivity Analysis of movie review and classifying them as either positive or negative using Python
+# Sentiment Analysis
+Sentiment Analysis of movie review and classifying them as either positive or negative using Python
 
 # What I did
-I tried sensitivity analysis of movie reviews and classified them as either positive or negative. I am using <b>nltk</b> library for the natural language processing. Since natural language processing uses machine learning so it programs might not yeild a right result every time. So these are the steps I followed:-<br>
+I tried Sentiment Analysis of movie reviews and classified them as either positive or negative. I am using <b>nltk</b> library for the natural language processing. Since natural language processing uses machine learning so it programs might not yeild a right result every time. So these are the steps I followed:-<br>
   1. <b>Acquire a raw dataset</b>- The nltk library offers a huge range of datasets mainly for natural language processing. One of them is movie reviews and it can be downloaded using the <b>nltk.download()</b> from the Python prompt. You will have the dataset depending on the path you seleceted during download. For me it was <b>/root/nltk_data/corpora/movie_reviews/</b>
   2. <b>Process the raw dataset</b>- Since we cannot use the raw dataset directly, I extracted every word from the txt files in /root/nltk_data/corpora/movie_reviews/pos/ and /root/nltk_data/corpora/movie_reviews/neg/ and associated them with "pos" or "neg" depending on which directory it is found and stored it in a list of tuples where each tuple contained the list of words of a single file and the name of the directory. E.g (<list of words of cv000_29416.txt>, "neg") etc. I called it documents.
   3. <b>A little bit more processing</b>- Along with the above processing I also removed the stop words and puctuations and shuffled the list documents.
