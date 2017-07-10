@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # NOTE : run nltk.download() in the python prompt to check if the movie_reviews folder is updated
 
@@ -18,6 +18,7 @@ from nltk.classify.scikitlearn import SklearnClassifier
 from sklearn.naive_bayes import MultinomialNB,BernoulliNB
 from sklearn.linear_model import LogisticRegression,SGDClassifier
 from sklearn.svm import SVC, LinearSVC, NuSVC
+from pathlib import Path
 
 
 stop = set(stopwords.words('english'))              # stopwords of the english language
@@ -45,19 +46,24 @@ def create_training_testing_wordfeature():
     this function creates and returns training dataset, testing dataset and word_features
     """
     documents = []                                      # it is a list of tuples containing the words of fileid and the category
-    print("documents list is being created...")
 
-    # category = positive or negative
-    # fileid = file id for the files in pos or neg folder inside the /root/nltk_data/corpora/movie_reviews
-    for category in movie_reviews.categories():         # movie_reviews.categories() return pos or neg
-         for fileid in movie_reviews.fileids(category): # movie_reviews.fileids(category) return the file names of the files in neg or pos folder
-             words = list(movie_reviews.words(fileid))
-             for word in words:
-                 if word in stop and word in string.punctuation and not word.isalpha():
-                     words.remove(word)
-             documents.append((words, category))
-    with open("documents.pickle", 'wb') as f:
-        pickle.dump(documents, f)
+    if Path('document.pickle').exists:                    # if documents.pickle already exists use it
+        print("Loading documents.pickle in documents...")
+        with open ('documents.pickle', 'rb') as fi:
+            documents = pickle.load(fi)
+    else:                                               # else create it
+        # category = positive or negative
+        # fileid = file id for the files in pos or neg folder inside the /root/nltk_data/corpora/movie_reviews
+        print("documents list is being created...")
+        for category in movie_reviews.categories():         # movie_reviews.categories() return pos or neg
+             for fileid in movie_reviews.fileids(category): # movie_reviews.fileids(category) return the file names of the files in neg or pos folder
+                 words = list(movie_reviews.words(fileid))
+                 for word in words:
+                     if word in stop and word in string.punctuation and not word.isalpha():
+                         words.remove(word)
+                 documents.append((words, category))
+        with open("documents.pickle", 'wb') as f:
+            pickle.dump(documents, f)
 
     random.shuffle(documents)                           # shuffle documents
     random.shuffle(documents)                           # shuffle documents
@@ -73,12 +79,11 @@ def create_training_testing_wordfeature():
         pickle.dump(word_features, f)
 
 
-
     # category = pos or neg
     # rev = review file words
     featuresets = [(find_features(rev, word_features), category) for (rev, category) in documents]     # this list will contain both the training set and the testing set
-    trainingset = featuresets[:len(featuresets) * 3/4]  # used to train the algorithm
-    testingset = featuresets[len(featuresets) * 3/4:]   # used to test the algorithm
+    trainingset = featuresets[:int(len(featuresets) * 3/4)]  # used to train the algorithm
+    testingset = featuresets[int(len(featuresets) * 3/4):]   # used to test the algorithm
 
     return trainingset, testingset, word_features
 
@@ -162,13 +167,15 @@ def create_nu_svc_classifier(trainingset, testingset):
     return NuSVC_classifier
 
 
+
+
 def main():
     trainingset, testingset, word_features = create_training_testing_wordfeature()
     create_nb_classifier(trainingset, testingset)
     create_mnb_classifier(trainingset, testingset)
     create_bnb_classifier(trainingset, testingset)
-    create_logistic_regression_classifier(trainingset, testingset)
     create_sgdc_classifier(trainingset, testingset)
+    create_logistic_regression_classifier(trainingset, testingset)
     create_svc_classifier(trainingset, testingset)
     create_linear_svc_classifier(trainingset, testingset)
     create_nu_svc_classifier(trainingset, testingset)
