@@ -19,6 +19,7 @@ from sklearn.naive_bayes import MultinomialNB,BernoulliNB
 from sklearn.linear_model import LogisticRegression,SGDClassifier
 from sklearn.svm import SVC, LinearSVC, NuSVC
 from pathlib import Path
+import os
 
 
 stop = set(stopwords.words('english'))              # stopwords of the english language
@@ -47,7 +48,7 @@ def create_training_testing_wordfeature():
     """
     documents = []                                      # it is a list of tuples containing the words of fileid and the category
 
-    if Path('document.pickle').exists:                    # if documents.pickle already exists use it
+    if 'documents.pickle' in os.listdir('./'):                    # if documents.pickle already exists use it
         print("Loading documents.pickle in documents...")
         with open ('documents.pickle', 'rb') as fi:
             documents = pickle.load(fi)
